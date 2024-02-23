@@ -14,17 +14,6 @@ public abstract class BaseRequest : IRequest
     [JsonIgnore]
     protected internal abstract string BaseUrl { get; }
 
-    ///// <summary>
-    ///// See <see cref="IRequest.Key"/>.
-    ///// </summary>
-    //[JsonIgnore]
-    //public virtual string Key { get; set; }
-
-    ///// <summary>
-    ///// See <see cref="IRequest.ClientId"/>.
-    ///// </summary>
-    //[JsonIgnore]
-    //public virtual string ClientId { get; set; }
 
     /// <summary>
     /// See <see cref="IRequest.GetUri()"/>.
@@ -48,22 +37,6 @@ public abstract class BaseRequest : IRequest
 
         var uri = new Uri($"{SCHEME}{BaseUrl}{queryString}");
         return uri;
-        //if(ClientId == null)
-        //{
-        //    return uri;
-        //}
-
-        //var url = $"{uri.LocalPath}{uri.Query}&client={ClientId}";
-
-        //var privateKey = Key.Replace("-", "+").Replace("_", "/");
-        //var privateKeyBytes = Convert.FromBase64String(privateKey);
-        //var pathAndQueryBytes = Encoding.ASCII.GetBytes(uri.LocalPath + uri.Query);
-
-        //var hmacsha1 = new HMACSHA1(privateKeyBytes);
-        //var computeHash = hmacsha1.ComputeHash(pathAndQueryBytes);
-        //var signature = Convert.ToBase64String(computeHash).Replace("+", "-").Replace("/", "_");
-
-        //return new Uri($"{uri.Scheme}://{uri.Host}{url}&signature={signature}");
     }
 
     /// <summary>
