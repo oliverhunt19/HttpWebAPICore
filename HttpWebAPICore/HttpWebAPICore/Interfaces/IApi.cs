@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace HttpWebAPICore;
+namespace HttpWebAPICore.Interfaces;
 
 /// <summary>
 /// Base Api interface.

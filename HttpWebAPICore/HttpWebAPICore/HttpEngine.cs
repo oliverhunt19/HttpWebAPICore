@@ -2,6 +2,7 @@
 using HttpWebAPICore.Interfaces;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using JsonException = System.Text.Json.JsonException;
 
 namespace HttpWebAPICore;
@@ -213,30 +214,13 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
             return response;
         }
 
-        var rawJson = await httpResponse.Content
+        Stream rawResponce = await httpResponse.Content
                     .ReadAsStreamAsync(cancellationToken)
                     .ConfigureAwait(false);
 
-#if DEBUG
-        string rawJsonString = await new StreamReader(rawJson).ReadToEndAsync().ConfigureAwait(false);
-        rawJson.Seek(0, SeekOrigin.Begin);
-        long size = rawJson.Length;
-#endif
-        try
-        {
-            response = await EngineSerialiser.DeserializeAsync(rawJson,cancellationToken).ConfigureAwait(false) ?? new TResponse();
-        }
-        catch(JsonException ex)
-        {
-            string line = rawJsonString.GetSnippet((int)(ex.LineNumber?? 0), 30);
-            throw new InvalidOperationException(line, ex);
-        }
-        //object deseralised = JsonConvert.DeserializeObject(rawJson);
-        //object deseralised = await JsonSerializer.DeserializeAsync(rawJson, typeof(object), jsonSerializerOptions).ConfigureAwait(false) ?? new TResponse();
+        response = await EngineSerialiser.DeserializeAsync(rawResponce,cancellationToken).ConfigureAwait(false) ?? new TResponse();
 
-        //response = JsonConvert.DeserializeObject<TResponse>(rawJson) ?? new TResponse();
-        //response.RawJson = rawJson;
-        response.RawJson = rawJsonString;
+        response.RawJson = await rawResponce.StreamToString();
         response.Request = request;
         response.RequestUri = httpResponse.RequestMessage?.RequestUri;
         await response.PostProcess();
@@ -266,6 +250,15 @@ public static class HttpEngineExtensions
             snippetLines.Add(line);
         }
         return string.Join("\n", snippetLines);
+    }
+
+    public static Task<string> StreamToString(this Stream stream)
+    {
+        stream.Position = 0;
+        using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+        {
+            return reader.ReadToEndAsync();
+        }
     }
 
 

@@ -13,7 +13,7 @@ public static class HttpClientFactory
     /// <summary>
     /// Proxy property that will be used for all requests.
     /// </summary>
-    public static IWebProxy Proxy { get; set; }
+    public static IWebProxy? Proxy { get; set; }
 
     /// <summary>
     /// Create Default Http Client.
@@ -48,7 +48,7 @@ public static class HttpClientFactory
     /// Get Default Http Client Handler.
     /// </summary>
     /// <returns>The <see cref="HttpMessageHandler"/>.</returns>
-    public static HttpClientHandler GetDefaultHttpClientHandler(IWebProxy webProxy = null)
+    public static HttpClientHandler GetDefaultHttpClientHandler(IWebProxy? webProxy = null)
     {
         var httpClientHandler = new HttpClientHandler
         {
