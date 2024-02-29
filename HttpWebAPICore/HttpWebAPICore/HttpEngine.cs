@@ -3,7 +3,6 @@ using HttpWebAPICore.Interfaces;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using JsonException = System.Text.Json.JsonException;
 
 namespace HttpWebAPICore;
 
@@ -74,8 +73,8 @@ public class HttpEngine
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
 public class HttpEngine<TRequest, TResponse> : HttpEngine
-    where TRequest : IRequest
-    where TResponse : IResponse<TRequest>, new()
+    where TRequest : class, IRequest
+    where TResponse : class, IResponse<TRequest>, new()
 {
     protected HttpEngineSerialiser<TResponse> EngineSerialiser { get; }
 
@@ -108,12 +107,12 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
     /// <param name="request">The request that will be sent.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
     /// <returns>The <see cref="Task{T}"/>.</returns>
-    public async Task<TResponse> QueryAsync(TRequest request, CancellationToken cancellationToken = default)
+    public Task<TResponse> QueryAsync(TRequest request, CancellationToken cancellationToken = default)
     {
         if(request == null)
             throw new ArgumentNullException(nameof(request));
 
-        return await QueryAsync(request, new HttpEngineOptions(), cancellationToken).ConfigureAwait(false);
+        return QueryAsync(request, new HttpEngineOptions(), cancellationToken);
     }
 
     /// <summary>
@@ -133,11 +132,16 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
 
         try
         {
-            using var httpResponseMessage = await ProcessRequestAsync(request, httpEngineOptions, cancellationToken)
+            TResponse response;
+            using (HttpResponseMessage httpResponseMessage = await ProcessRequestAsync(request, httpEngineOptions, cancellationToken)
+                 .ConfigureAwait(false))
+            {
+                response = await ProcessResponseAsync(httpResponseMessage, request, cancellationToken)
                 .ConfigureAwait(false);
+            }
+                
 
-            var response = await ProcessResponseAsync(httpResponseMessage, request, cancellationToken)
-                .ConfigureAwait(false);
+            
             //return response;
             switch(response.Status)
             {
@@ -184,7 +188,7 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
         if(request == null)
             throw new ArgumentNullException(nameof(request));
 
-        using var httpRequestMessage = request.GetHttpRequestMessage();
+        HttpRequestMessage httpRequestMessage = request.GetHttpRequestMessage();
 
         if(!await IsConnected(httpRequestMessage.RequestUri ?? options.DefaultConnectionCheck)
             .ConfigureAwait(false))

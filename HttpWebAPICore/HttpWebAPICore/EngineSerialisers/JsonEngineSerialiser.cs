@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 namespace HttpWebAPICore.EngineSerialisers
 {
     public class JsonEngineSerialiser<TResponse> : HttpEngineSerialiser<TResponse>
+        where TResponse : class
     {
         /// <summary>
         /// Json Serializer Options.
@@ -23,7 +24,7 @@ namespace HttpWebAPICore.EngineSerialisers
 
         };
 
-        public override ValueTask<TResponse> DeserializeAsync(Stream rawResponce, CancellationToken cancellationToken)
+        public override ValueTask<TResponse?> DeserializeAsync(Stream rawResponce, CancellationToken cancellationToken)
         {
             return JsonSerializer.DeserializeAsync<TResponse>(rawResponce, jsonSerializerOptions, cancellationToken);
         }
