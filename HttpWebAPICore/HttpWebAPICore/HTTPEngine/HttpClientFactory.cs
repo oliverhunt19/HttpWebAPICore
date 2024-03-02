@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace HttpWebAPICore;
+namespace HttpWebAPICore.HTTPEngine;
 
 /// <summary>
 /// Provide a default global httpClient and a factory a factory method
@@ -35,7 +35,7 @@ public static class HttpClientFactory
     /// <param name="httpClient"></param>
     public static void ConfigureDefaultHttpClient(HttpClient httpClient)
     {
-        if(httpClient == null)
+        if (httpClient == null)
             throw new ArgumentNullException(nameof(httpClient));
 
         httpClient.Timeout = TimeSpan.FromSeconds(30);
@@ -55,7 +55,7 @@ public static class HttpClientFactory
             Proxy = webProxy
         };
 
-        if(httpClientHandler.SupportsAutomaticDecompression)
+        if (httpClientHandler.SupportsAutomaticDecompression)
         {
             httpClientHandler.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
         }

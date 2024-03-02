@@ -1,8 +1,9 @@
-﻿using HttpWebAPICore.Interfaces;
+﻿using HttpWebAPICore.HTTPEngine;
+using HttpWebAPICore.Interfaces;
 
-namespace HttpWebAPICore
+namespace HttpWebAPICore.BaseClasses
 {
-    public class APIBase<TRequest,TResponce> : HttpEngine<TRequest,TResponce>, IApi<TRequest,TResponce>
+    public class APIBase<TRequest, TResponce> : HttpEngine<TRequest, TResponce>, IApi<TRequest, TResponce>
         where TRequest : class, IRequest
         where TResponce : class, IResponse<TRequest>, new()
     {

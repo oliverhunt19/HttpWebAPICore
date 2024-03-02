@@ -1,4 +1,4 @@
-﻿namespace HttpWebAPICore;
+﻿namespace HttpWebAPICore.HTTPEngine;
 
 /// <summary>
 /// Http Engine Options.

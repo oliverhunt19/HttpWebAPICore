@@ -1,7 +1,7 @@
 using HttpWebAPICore.Interfaces;
 using System.Text.Json.Serialization;
 
-namespace HttpWebAPICore;
+namespace HttpWebAPICore.BaseClasses;
 
 /// <summary>
 /// Base abstract class for responses.
@@ -34,7 +34,7 @@ public abstract class BaseResponse<T> : IResponse<T>
     [JsonPropertyName("html_attributions")]
     public virtual IEnumerable<string> HtmlAttributions { get; set; }
 
-    public T Request {get;set;}
+    public T Request { get; set; }
 
     public BaseResponse()
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 
-namespace HttpWebAPICore;
+namespace HttpWebAPICore.Utilities;
 
 /// <summary>
 ///Json Naming Policy Decorator.
@@ -22,7 +22,7 @@ public class JsonNamingPolicyDecorator : JsonNamingPolicy
     /// <inheritdoc />
     public override string ConvertName(string name)
     {
-        if(name == null)
+        if (name == null)
             throw new ArgumentNullException(nameof(name));
 
         return underlyingNamingPolicy == null

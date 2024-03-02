@@ -4,14 +4,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace HttpWebAPICore;
+namespace HttpWebAPICore.HTTPEngine;
 
 /// <summary>
 /// Http Engine.
 /// </summary>
 public class HttpEngine
 {
-    
+
 
     protected readonly HttpClient httpClient;
 
@@ -21,7 +21,7 @@ public class HttpEngine
         ServicePointManager.DefaultConnectionLimit = 10;
     }
 
-    
+
 
     public static async Task<bool> IsConnected(Uri host)
     {
@@ -41,7 +41,7 @@ public class HttpEngine
         }
     }
 
-    public  async Task<bool> TestInternetConnection(string? url = null)
+    public async Task<bool> TestInternetConnection(string? url = null)
     {
         try
         {
@@ -109,7 +109,7 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
     /// <returns>The <see cref="Task{T}"/>.</returns>
     public Task<TResponse> QueryAsync(TRequest request, CancellationToken cancellationToken = default)
     {
-        if(request == null)
+        if (request == null)
             throw new ArgumentNullException(nameof(request));
 
         return QueryAsync(request, new HttpEngineOptions(), cancellationToken);
@@ -124,8 +124,8 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
     /// <returns>The <see cref="Task{T}"/>.</returns>
     public async Task<TResponse> QueryAsync(TRequest request, HttpEngineOptions httpEngineOptions, CancellationToken cancellationToken = default)
     {
-        
-        if(request == null)
+
+        if (request == null)
             throw new ArgumentNullException(nameof(request));
 
         httpEngineOptions ??= new HttpEngineOptions();
@@ -139,11 +139,11 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
                 response = await ProcessResponseAsync(httpResponseMessage, request, cancellationToken)
                 .ConfigureAwait(false);
             }
-                
 
-            
+
+
             //return response;
-            switch(response.Status)
+            switch (response.Status)
             {
                 case Status.Ok:
                 case Status.NotFound:
@@ -153,7 +153,7 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
 
                 case Status.InvalidRequest:
                 case Status.InvalidArgument:
-                    if(!httpEngineOptions.ThrowOnInvalidRequest)
+                    if (!httpEngineOptions.ThrowOnInvalidRequest)
                     {
                         return response;
                     }
@@ -168,7 +168,7 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
                     };
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             //Uri uri = request
             //.GetUri();
@@ -179,18 +179,18 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
         }
     }
 
-    
+
 
 
 
     private async Task<HttpResponseMessage> ProcessRequestAsync(TRequest request, HttpEngineOptions options, CancellationToken cancellationToken = default)
     {
-        if(request == null)
+        if (request == null)
             throw new ArgumentNullException(nameof(request));
 
         HttpRequestMessage httpRequestMessage = request.GetHttpRequestMessage();
 
-        if(!await IsConnected(httpRequestMessage.RequestUri ?? options.DefaultConnectionCheck)
+        if (!await IsConnected(httpRequestMessage.RequestUri ?? options.DefaultConnectionCheck)
             .ConfigureAwait(false))
         {
             throw new InvalidOperationException("The http client cannot get a connection to the host");
@@ -201,12 +201,12 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
     }
     private async Task<TResponse> ProcessResponseAsync(HttpResponseMessage httpResponse, TRequest request, CancellationToken cancellationToken = default)
     {
-        if(httpResponse == null)
+        if (httpResponse == null)
             throw new ArgumentNullException(nameof(httpResponse));
 
 
         TResponse response;
-        if(httpResponse.StatusCode == HttpStatusCode.Forbidden)
+        if (httpResponse.StatusCode == HttpStatusCode.Forbidden)
         {
             response = new TResponse
             {
@@ -222,12 +222,12 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
                     .ReadAsStreamAsync(cancellationToken)
                     .ConfigureAwait(false);
 
-        response = await EngineSerialiser.DeserializeAsync(rawResponce,cancellationToken).ConfigureAwait(false) ?? new TResponse();
+        response = await EngineSerialiser.DeserializeAsync(rawResponce, cancellationToken).ConfigureAwait(false) ?? new TResponse();
 
         response.RawJson = await rawResponce.StreamToString();
         response.Request = request;
         response.RequestUri = httpResponse.RequestMessage?.RequestUri;
-        await response.PostProcess();
+        await response.PostProcess().ConfigureAwait(false);
 
         return response;
     }
@@ -247,7 +247,7 @@ public static class HttpEngineExtensions
     {
         List<string> snippetLines = new List<string>();
         string[] lines = text.Replace("\r", "").Split('\n');
-        for(int i = 0; i < 2 * eitherSide + 1; i++)
+        for (int i = 0; i < 2 * eitherSide + 1; i++)
         {
             int lineNumber = lineNo - eitherSide + i;
             string line = lines.Length >= lineNumber ? lines[lineNumber - 1] : "";

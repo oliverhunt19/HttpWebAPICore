@@ -1,4 +1,4 @@
-﻿namespace HttpWebAPICore;
+﻿namespace HttpWebAPICore.Utilities;
 
 /// <summary>
 /// List Extensions.
@@ -13,10 +13,10 @@ public static class ListExtension
     /// <param name="value">The <see cref="string"/> value.</param>
     public static void Add(this IList<KeyValuePair<string, string?>> list, string key, string? value = null)
     {
-        if(list == null)
+        if (list == null)
             throw new ArgumentNullException(nameof(list));
 
-        if(key == null)
+        if (key == null)
             throw new ArgumentNullException(nameof(key));
 
         var parameter = new KeyValuePair<string, string?>(key, value);
@@ -25,7 +25,7 @@ public static class ListExtension
     }
     public static bool AddNullable(this IList<KeyValuePair<string, string?>> list, string key, string? value)
     {
-        if(value == null)
+        if (value == null)
         {
             return false;
         }
@@ -36,7 +36,7 @@ public static class ListExtension
 
     public static bool AddNullable(this IList<KeyValuePair<string, string?>> list, string key, Enum? value)
     {
-        if(value == null)
+        if (value == null)
         {
             return false;
         }
@@ -45,7 +45,7 @@ public static class ListExtension
     }
     public static bool AddNullableKey(this IList<KeyValuePair<string, string?>> list, string? key)
     {
-        if(key == null)
+        if (key == null)
         {
             return false;
         }
@@ -55,7 +55,7 @@ public static class ListExtension
 
     public static bool AddNullableKey(this IList<KeyValuePair<string, string?>> list, Enum? key)
     {
-        if(key == null)
+        if (key == null)
         {
             return false;
         }
@@ -65,7 +65,7 @@ public static class ListExtension
 
     public static void AddBool(this IList<KeyValuePair<string, string?>> list, string key, string? value, bool addOk)
     {
-        if(addOk)
+        if (addOk)
         {
             list.Add(key, value);
         }

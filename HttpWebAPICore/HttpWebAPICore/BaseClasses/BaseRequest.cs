@@ -1,7 +1,7 @@
 ﻿using HttpWebAPICore.Interfaces;
 using System.Text.Json.Serialization;
 
-namespace HttpWebAPICore;
+namespace HttpWebAPICore.BaseClasses;
 
 /// <summary>
 /// Base abstract class for requests.
@@ -30,7 +30,7 @@ public abstract class BaseRequest : IRequest
                     : Uri.EscapeDataString(x.Key) + "=" + Uri.EscapeDataString(x.Value));
         var queryString = string.Join("&", queryStringParameters);
 
-        if(!string.IsNullOrEmpty(queryString))
+        if (!string.IsNullOrEmpty(queryString))
         {
             queryString = $"?{queryString}";
         }
@@ -51,6 +51,6 @@ public abstract class BaseRequest : IRequest
 
     public virtual HttpRequestMessage GetHttpRequestMessage()
     {
-        return new HttpRequestMessage(HttpMethod.Get,GetUri());
+        return new HttpRequestMessage(HttpMethod.Get, GetUri());
     }
 }
