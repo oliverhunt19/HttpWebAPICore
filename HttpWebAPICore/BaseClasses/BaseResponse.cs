@@ -10,7 +10,7 @@ public abstract class BaseResponse<T> : IResponse<T>
     where T : IRequest
 {
     /// <inheritdoc />
-    public virtual string RawJson { get; set; }
+    public virtual string? RawJson { get; set; }
 
     /// <inheritdoc />
     public virtual Uri? RequestUri { get; set; }
