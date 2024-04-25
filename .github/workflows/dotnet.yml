@@ -3,6 +3,9 @@
 
 name: .NET
 
+env:
+  NuGetDirectory: ${{ github.workspace}}/nuget
+
 on:
   push:
     branches: [ "main" ]
@@ -23,6 +26,10 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration Release
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal 
+      
+      # Create the NuGet package in the folder from the environment variable NuGetDirectory
+    - name: Nuget
+      run: dotnet pack --no-build --output ${{ env.NuGetDirectory }}
