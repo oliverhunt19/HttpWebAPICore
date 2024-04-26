@@ -34,7 +34,7 @@ jobs:
             echo "${{ steps.releaseVersion.outputs.is_stable}}"
 
         - name: Check Prerelease
-          if: ${{ github.event.prerelease}} == ${{ steps.releaseVersion.outputs.is_stable}}
+          if: ${{ github.event.release.prerelease}} == ${{ steps.releaseVersion.outputs.is_stable}}
           uses: actions/github-script@v3
           with:
             script: |
