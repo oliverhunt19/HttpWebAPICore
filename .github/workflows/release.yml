@@ -1,0 +1,11 @@
+name: release
+on:
+    release:
+        types: [created]
+jobs:
+    release:
+      runs-on: ubuntu-latest
+      steps:
+            # Checkout the exact commit tagged on the release.
+            - name: Checkout repo
+      
