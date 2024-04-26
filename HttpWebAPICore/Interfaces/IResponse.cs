@@ -8,7 +8,7 @@ public interface IResponse
     /// <summary>
     /// Raw json of the response.
     /// </summary>
-    string RawJson { get; set; }
+    string? RawJson { get; set; }
 
     /// <summary>
     /// Raw querystring of the request.

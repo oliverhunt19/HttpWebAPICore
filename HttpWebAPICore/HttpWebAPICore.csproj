@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Configurations>Debug;Release;Develop_Debug</Configurations>
+  </PropertyGroup>
+
+	<PropertyGroup>
+		<RepositoryUrl>https://github.com/oliverhunt19/HttpWebAPICore</RepositoryUrl>
+		<Version>0.0.1</Version>
+		<Title>HttpWebAPICore</Title>
+		<Authors>Oliver Hunt</Authors>
+	</PropertyGroup>
+
+</Project>
