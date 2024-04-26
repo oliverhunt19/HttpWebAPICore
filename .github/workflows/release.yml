@@ -1,4 +1,8 @@
 name: release
+
+env:
+  NuGetDirectory: ${{ github.workspace}}/nuget
+
 on:
     release:
         types: [created]
