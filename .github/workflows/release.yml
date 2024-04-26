@@ -16,7 +16,7 @@ jobs:
           with:
             dotnet-version: 8.0.x
         - run: | 
-            echo "Name: ${{ github.event.release.name }} Description: ${{ github.event.release.body }}"
+            echo "Name: ${{ github.event.release.name }} Description: ${{ github.event.release.body }} Tag: ${{ github.event.release.tag_name }}"
         - name: Restore dependencies
           run: dotnet restore
         - name: Build
