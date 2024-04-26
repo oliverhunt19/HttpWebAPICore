@@ -47,7 +47,6 @@ jobs:
           uses: author/action-rollback@stable
           with:
             # Using a tag name
-            release_id: ${{ github.event.release.name }}
             tag: ${{ github.event.release.tag_name }}
             delete_orphan_tag: true
           env:
