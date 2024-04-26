@@ -27,13 +27,17 @@ jobs:
           uses: nowsprinting/check-version-format-action@v3
           with:
             prefix: 'v'
+            
+        - name: Print Prerelease
+          run: |
+            echo "${{ github.event.prerelease}}"
+            echo "${{ steps.releaseVersion.outputs.is_stable}}"
 
         - name: Check Prerelease
           if: ${{ github.event.prerelease}} == ${{ steps.releaseVersion.outputs.is_stable}}
           uses: actions/github-script@v3
           with:
             script: |
-                echo "${{ github.event.prerelease}} ${{ steps.releaseVersion.outputs.is_stable}}"
                 core.setFailed('Release type not the same')
           
         # Create the NuGet package in the folder from the environment variable NuGetDirectory
