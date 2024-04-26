@@ -40,12 +40,15 @@ jobs:
           run: dotnet pack --no-build --output ${{ env.NuGetDirectory }} -p:Version=${{ steps.releaseVersion.outputs.full_without_prefix }}
           
         - name: Nuget Push
-          run: dotnet nuget push ${{ env.NuGetDirectory }}/*.nupkg --api-key "${{ secrets.NUGET_APIKEY }}" --source https://nuget.pkg.github.com/oliverhunt19/index.json --skip-duplicate
+          run: dotnet nuget push ${{ env.NuGetDirectory }}/*.nupkg --api-key "${{ secrets.ACTION_APIKEY }}" --source https://nuget.pkg.github.com/oliverhunt19/index.json --skip-duplicate
           
         - name: Rollback Release
           if: failure()
           uses: author/action-rollback@stable
           with:
             # Using a tag name
-            id: ${{ github.event.release.name }}
+            release_id: ${{ github.event.release.name }}
             tag: ${{ github.event.release.tag_name }}
+            delete_orphan_tag: true
+          env:
+            GITHUB_TOKEN: ${{ secrets.ACTION_APIKEY }}
