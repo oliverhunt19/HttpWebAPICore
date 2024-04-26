@@ -21,10 +21,13 @@ jobs:
           run: dotnet build --no-restore --configuration Release
         - name: Test
           run: dotnet test --no-build --verbosity normal 
-        
+
+        - name: Validate and extract release information
+          id: releaseVersion
+          uses: manovotny/github-releases-for-automated-package-publishing-action@v2.0.1
         # Create the NuGet package in the folder from the environment variable NuGetDirectory
         - name: Nuget
-          run: dotnet pack --no-build --output ${{ env.NuGetDirectory }}
+          run: dotnet pack --no-build --output ${{ env.NuGetDirectory }} -p:Version=${{ steps.releaseVersion.outputs.tag }}
           
         - name: Nuget Push
           run: dotnet nuget push ${{ env.NuGetDirectory }}/*.nupkg --api-key "${{ secrets.NUGET_APIKEY }}" --source https://nuget.pkg.github.com/oliverhunt19/index.json --skip-duplicate
