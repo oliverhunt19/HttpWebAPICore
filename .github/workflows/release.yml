@@ -1,4 +1,4 @@
-pname: release
+name: release
 
 env:
   NuGetDirectory: ${{ github.workspace}}/nuget
