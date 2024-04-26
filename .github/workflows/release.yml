@@ -1,4 +1,4 @@
-name: release
+pname: release
 
 env:
   NuGetDirectory: ${{ github.workspace}}/nuget
@@ -33,6 +33,7 @@ jobs:
           uses: actions/github-script@v3
           with:
             script: |
+                echo "${{ github.event.prerelease}} ${{ steps.releaseVersion.outputs.is_stable}}"
                 core.setFailed('Release type not the same')
           
         # Create the NuGet package in the folder from the environment variable NuGetDirectory
