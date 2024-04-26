@@ -30,7 +30,7 @@ jobs:
             
         - name: Print Prerelease
           run: |
-            echo "${{ github.event.prerelease}}"
+            echo "${{ github.event.release.prerelease}}"
             echo "${{ steps.releaseVersion.outputs.is_stable}}"
 
         - name: Check Prerelease
