@@ -9,7 +9,6 @@
 
 	<PropertyGroup>
 		<RepositoryUrl>https://github.com/oliverhunt19/HttpWebAPICore</RepositoryUrl>
-		<Version>0.0.1</Version>
 		<Title>HttpWebAPICore</Title>
 		<Authors>Oliver Hunt</Authors>
 	</PropertyGroup>
