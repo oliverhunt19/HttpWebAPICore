@@ -9,7 +9,7 @@ namespace HttpWebAPICore.Interfaces;
 /// </summary>
 /// <typeparam name="TRequest">The request type.</typeparam>
 /// <typeparam name="TResponse">The response type.</typeparam>
-public interface IApi<in TRequest, TResponse>
+public interface IAPI<in TRequest, TResponse>
 {
     /// <summary>
     /// Query Async.

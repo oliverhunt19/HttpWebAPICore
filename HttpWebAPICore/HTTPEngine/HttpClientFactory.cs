@@ -52,7 +52,8 @@ public static class HttpClientFactory
     {
         var httpClientHandler = new HttpClientHandler
         {
-            Proxy = webProxy
+            Proxy = webProxy,
+            CookieContainer = new CookieContainer()
         };
 
         if (httpClientHandler.SupportsAutomaticDecompression)

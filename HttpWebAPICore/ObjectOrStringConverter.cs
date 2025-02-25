@@ -13,6 +13,7 @@ namespace HttpWebAPICore
     {
         public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            var rootElement = JsonDocument.ParseValue(ref reader);
             if (reader.TokenType == JsonTokenType.String)
             {
                 return default;

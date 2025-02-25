@@ -17,7 +17,9 @@ public class HttpEngine
 
     protected HttpEngine(HttpClient httpClient)
     {
+        HttpClientHandler handler = new HttpClientHandler() { CookieContainer = new CookieContainer() };
         this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36");
         ServicePointManager.DefaultConnectionLimit = 10;
     }
 
@@ -107,7 +109,7 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
     /// <param name="request">The request that will be sent.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
     /// <returns>The <see cref="Task{T}"/>.</returns>
-    public Task<TResponse> QueryAsync(TRequest request, CancellationToken cancellationToken = default)
+    public virtual Task<TResponse> QueryAsync(TRequest request, CancellationToken cancellationToken = default)
     {
         if (request == null)
             throw new ArgumentNullException(nameof(request));
@@ -222,17 +224,36 @@ public class HttpEngine<TRequest, TResponse> : HttpEngine
                     .ReadAsStreamAsync(cancellationToken)
                     .ConfigureAwait(false);
 
-        response = await EngineSerialiser.DeserializeAsync(rawResponce, cancellationToken).ConfigureAwait(false) ?? new TResponse();
+        try
+        {
+            response = await EngineSerialiser.DeserializeAsync(rawResponce, cancellationToken).ConfigureAwait(false) ?? new TResponse();
+            response.RawJson = await rawResponce.StreamToString();
+            response.Request = request;
+            response.RequestUri = httpResponse.RequestMessage?.RequestUri;
+            await response.PostProcess().ConfigureAwait(false);
 
-        response.RawJson = await rawResponce.StreamToString();
-        response.Request = request;
-        response.RequestUri = httpResponse.RequestMessage?.RequestUri;
-        await response.PostProcess().ConfigureAwait(false);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            string responce = await rawResponce.StreamToString();
+            throw new HttpEngineException(responce,ex);
+        }
+        
 
-        return response;
+        
     }
 
 
+}
+
+public class HttpEngineException : Exception
+{
+    public string Json { get; }
+    public HttpEngineException(string json, Exception exception) : base("The engine has had an exception ",exception )
+    {
+        Json = json;
+    }
 }
 
 public static class HttpEngineExtensions
